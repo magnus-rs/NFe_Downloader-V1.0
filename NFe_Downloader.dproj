@@ -103,6 +103,12 @@
         <DCCReference Include="src\view\U_Principal.pas">
             <Form>Form_Principal</Form>
         </DCCReference>
+        <DCCReference Include="src\data\U_DM.pas">
+            <Form>DM</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="src\utils\U_Config.pas"/>
         <BuildConfiguration Include="Debug">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -135,7 +141,7 @@
                 <Platform value="Win64">False</Platform>
             </Platforms>
             <Deployment Version="3">
-                <DeployFile LocalName="NFe_Downloader.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="bin\NFe_Downloader.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>NFe_Downloader.exe</RemoteName>
                         <Overwrite>true</Overwrite>

@@ -1,0 +1,14 @@
+object DM: TDM
+  OldCreateOrder = False
+  OnDestroy = DataModuleDestroy
+  Height = 332
+  Width = 455
+  object FDConnection1: TFDConnection
+    Left = 104
+    Top = 96
+  end
+  object FDPhysSQLiteDriverLink1: TFDPhysSQLiteDriverLink
+    Left = 232
+    Top = 97
+  end
+end

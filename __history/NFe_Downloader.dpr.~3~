@@ -1,0 +1,19 @@
+program NFe_Downloader;
+
+uses
+  Vcl.Forms,
+  U_Principal in 'src\view\U_Principal.pas' {Form_Principal},
+  U_DM in 'src\data\U_DM.pas' {DM: TDataModule},
+  U_Config in 'src\utils\U_Config.pas';
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+
+  AApplication.CreateForm(TForm_Principal, Form_Principal);
+  AApplication.CreateForm(TDM, DM);
+  plication.Run;
+
+end.

@@ -1,0 +1,75 @@
+unit U_DM;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
+  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.VCLUI.Wait,
+  FireDAC.Stan.ExprFuncs, FireDAC.Phys.SQLiteWrapper.Stat,
+  FireDAC.Phys.SQLiteDef, FireDAC.Phys.SQLite, Data.DB, FireDAC.Comp.Client;
+
+type
+  TDM = class(TDataModule)
+    FDConnection1: TFDConnection;
+    FDPhysSQLiteDriverLink1: TFDPhysSQLiteDriverLink;
+  private
+    { Private declarations }
+  public
+    function GetDBPath: string;
+    procedure Conectar;
+    procedure Desconectar;
+    { Public declarations }
+  end;
+
+var
+  DM: TDM;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+
+uses U_Config;
+
+{$R *.dfm}
+
+function TDM.GetDBPath: string;
+begin
+  Result :=
+    IncludeTrailingPathDelimiter(
+      ExtractFileDir(ExtractFileDir(ParamStr(0)))
+    ) + 'dados\nfe.db';
+end;
+
+procedure TDM.Conectar;
+var
+  DBPath: string;
+begin
+  DBPath := GetDatabasePathFromINI;
+
+  // Se não tem caminho ou arquivo não existe
+  if (DBPath = '') or (not FileExists(DBPath)) then
+  begin
+    DBPath := SolicitarCaminhoDB;
+
+    if DBPath = '' then
+      raise Exception.Create('Banco de dados não informado.');
+
+    SaveDatabasePathToINI(DBPath);
+  end;
+
+  FDConnection1.DriverName := 'SQLite';
+  FDConnection1.Params.Database := DBPath;
+  FDConnection1.Connected := True;
+end;
+
+procedure TDM.Desconectar;
+begin
+  if FDConnection1.Connected then
+    FDConnection1.Connected := False;
+end;
+
+
+
+end.
+
