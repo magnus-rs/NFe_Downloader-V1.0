@@ -1,0 +1,49 @@
+unit U_Certificados;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Grids, uEmpresas, uEmpresaService,
+  System.Generics.Collections, Vcl.StdCtrls;
+
+type
+  TForm_certificados = class(TForm)
+    ListBoxEmpresas: TListBox;
+    procedure CarregarLista;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form_certificados: TForm_certificados;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm_Certificados.CarregarLista;
+var
+  Lista: TObjectList<TEmpresa>;
+  Empresa: TEmpresa;
+begin
+  Lista := CarregarEmpresas;
+
+  try
+{    ListBox1.Items.Clear;
+
+    for Empresa in Lista do
+    begin
+      ListBox1.Items.Add(
+        Empresa.CNPJ + ' - ' + Empresa.RazaoSocial + ' - ' + datetostr(Empresa.ValidadeFim)
+      );
+    end;
+ }
+  finally
+    Lista.Free;
+  end;
+end;
+
+end.

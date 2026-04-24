@@ -1,0 +1,99 @@
+﻿unit U_Principal;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.Grids, Vcl.ExtCtrls,
+  Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ToolWin, System.DateUtils, System.UITypes,
+  ACBrBase,
+  ACBrDFe,
+  ACBrNFe,
+  ACBrDFeSSL,
+  ACBrNFeConfiguracoes,
+  ACBrDFeConfiguracoes,
+  pcnConversaoNFe,
+  pcnConversao,
+  ACBrNFeNotasFiscais,
+  ACBrNFeWebServices,
+  System.Generics.Collections, Data.DB, Vcl.Buttons, Vcl.DBGrids,
+  Datasnap.DBClient, FileCtrl;
+
+type
+  TForm_Principal = class(TForm)
+    MainMenu1: TMainMenu;
+    Arquivo1: TMenuItem;
+    Sair1: TMenuItem;
+    Sair2: TMenuItem;
+    Configuracoes1: TMenuItem;
+    Certificados1: TMenuItem;
+    ToolBar1: TToolBar;
+    StatusBar1: TStatusBar;
+    ACBrNFe1: TACBrNFe;
+    Panel1: TPanel;
+    ToolBar2: TToolBar;
+    TreeView1: TTreeView;
+    ToolButton1: TToolButton;
+    ToolButton2: TToolButton;
+    ToolButton3: TToolButton;
+    ToolButton4: TToolButton;
+    ToolButton5: TToolButton;
+    ToolButton6: TToolButton;
+    ToolButton7: TToolButton;
+    ToolButton8: TToolButton;
+    ToolButton9: TToolButton;
+    ToolButton10: TToolButton;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    TreeView2: TTreeView;
+    Panel4: TPanel;
+    Panel5: TPanel;
+    Splitter1: TSplitter;
+    Splitter2: TSplitter;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    TabSheet3: TTabSheet;
+    Panel6: TPanel;
+    StringGrid1: TStringGrid;
+    Label1: TLabel;
+    BTN_Importar_Certificado: TButton;
+    BTN_Remover_Certificado: TButton;
+    BTN_Atualizar_Lista: TButton;
+    CDataSet_NFE_Entrada: TClientDataSet;
+    DataSource_NFE_Entrada: TDataSource;
+    DateTimePicker1: TDateTimePicker;
+    DateTimePicker2: TDateTimePicker;
+    Label2: TLabel;
+    Label3: TLabel;
+    Button_Buscar: TSpeedButton;
+    Edit_Pasta: TEdit;
+    Button_Selecionar: TSpeedButton;
+    Label4: TLabel;
+    Label5: TLabel;
+    CDataSet_NFE_EntradaNFeNúmero: TStringField;
+    CDataSet_NFE_EntradaNFeSérie: TStringField;
+    CDataSet_NFE_EntradaNFeCTeTipo: TStringField;
+    CDataSet_NFE_EntradaEmissão: TStringField;
+    CDataSet_NFE_EntradaValor: TCurrencyField;
+    CDataSet_NFE_EntradaVencimento: TDateField;
+    CDataSet_NFE_EntradaEmitente: TStringField;
+    CDataSet_NFE_EntradaCFOP: TStringField;
+    CDataSet_NFE_EntradaNatureza: TStringField;
+    CDataSet_NFE_EntradaNFeChave: TStringField;
+    StatusBar2: TStatusBar;
+    DBGrid_NFE_Entrada: TDBGrid;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form_Principal: TForm_Principal;
+
+implementation
+
+{$R *.dfm}
+
+end.

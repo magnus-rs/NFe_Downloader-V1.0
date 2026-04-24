@@ -1,0 +1,51 @@
+unit uEmpresaService;
+
+interface
+
+uses
+  System.SysUtils, System.JSON, System.Generics.Collections,
+  System.IOUtils, uEmpresas;
+
+function CarregarEmpresas: TObjectList<TEmpresa>;
+
+implementation
+
+function CarregarEmpresas: TObjectList<TEmpresa>;
+var
+  JSONStr: string;
+  JSON: TJSONObject;
+  Arr: TJSONArray;
+  Obj: TJSONObject;
+  Empresa: TEmpresa;
+  I: Integer;
+begin
+  Result := TObjectList<TEmpresa>.Create(True);
+
+  if not FileExists('empresas.json') then
+    Exit;
+
+  JSONStr := TFile.ReadAllText('empresas.json');
+  JSON := TJSONObject.ParseJSONValue(JSONStr) as TJSONObject;
+
+  try
+    Arr := JSON.GetValue<TJSONArray>('empresas');
+
+    for I := 0 to Arr.Count - 1 do
+    begin
+      Obj := Arr.Items[I] as TJSONObject;
+
+      Empresa := TEmpresa.Create;
+      Empresa.CNPJ := Obj.GetValue<string>('cnpj');
+      Empresa.RazaoSocial := Obj.GetValue<string>('razao_social');
+      Empresa.Certificado := Obj.GetValue<string>('certificado');
+      Empresa.Senha := Obj.GetValue<string>('senha');
+
+      Result.Add(Empresa);
+    end;
+
+  finally
+    JSON.Free;
+  end;
+end;
+
+end.
