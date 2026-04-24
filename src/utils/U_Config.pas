@@ -6,6 +6,7 @@ uses
   System.SysUtils;
 
 function GetINIPath: string;
+function GetSQLPath: string;
 function GetDatabasePathFromINI: string;
 procedure SaveDatabasePathToINI(const Path: string);
 function SolicitarCaminhoDB: string;
@@ -61,6 +62,14 @@ begin
   finally
     OpenDialog.Free;
   end;
+end;
+
+function GetSQLPath: string;
+begin
+  Result :=
+    IncludeTrailingPathDelimiter(
+      ExtractFileDir(ExtractFileDir(ParamStr(0)))
+    ) + 'sql\init.sql';
 end;
 
 end.

@@ -17,7 +17,10 @@ uses
   ACBrNFeNotasFiscais,
   ACBrNFeWebServices,
   System.Generics.Collections, Data.DB, Vcl.Buttons, Vcl.DBGrids,
-  Datasnap.DBClient, FileCtrl;
+  Datasnap.DBClient, FileCtrl, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client;
 
 type
   TForm_Principal = class(TForm)
@@ -63,6 +66,8 @@ type
     StatusBar2: TStatusBar;
     DBGrid_NFE_Entrada: TDBGrid;
     Panel7: TPanel;
+    FDQuery1: TFDQuery;
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -75,5 +80,13 @@ var
 implementation
 
 {$R *.dfm}
+
+uses U_DM;
+
+procedure TForm_Principal.FormCreate(Sender: TObject);
+begin
+ //continua...
+end;
+
 
 end.

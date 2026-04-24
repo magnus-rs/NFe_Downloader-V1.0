@@ -11,4 +11,17 @@ object DM: TDM
     Left = 232
     Top = 97
   end
+  object FDScript1: TFDScript
+    SQLScripts = <>
+    Connection = FDConnection1
+    Params = <>
+    Macros = <>
+    Left = 104
+    Top = 176
+  end
+  object FDGUIxWaitCursor1: TFDGUIxWaitCursor
+    Provider = 'Forms'
+    Left = 224
+    Top = 176
+  end
 end

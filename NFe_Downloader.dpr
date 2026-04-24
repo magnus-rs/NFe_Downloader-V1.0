@@ -1,5 +1,4 @@
 program NFe_Downloader;
-
 uses
   Vcl.Forms,
   Vcl.Dialogs,
@@ -9,13 +8,10 @@ uses
   U_Config in 'src\utils\U_Config.pas';
 
 {$R *.res}
-
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-
   Application.CreateForm(TDM, DM);
-
     try
     DM.Conectar;
   except

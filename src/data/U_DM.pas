@@ -1,18 +1,23 @@
-unit U_DM;
+﻿unit U_DM;
 
 interface
 
 uses
-  System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  System.SysUtils, System.Classes, Vcl.Dialogs, Vcl.Controls,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
   FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.VCLUI.Wait,
   FireDAC.Stan.ExprFuncs, FireDAC.Phys.SQLiteWrapper.Stat,
-  FireDAC.Phys.SQLiteDef, FireDAC.Phys.SQLite, Data.DB, FireDAC.Comp.Client;
+  FireDAC.Phys.SQLiteDef, FireDAC.Phys.SQLite, Data.DB, FireDAC.Comp.Client,
+  FireDAC.Comp.ScriptCommands, FireDAC.Stan.Util, FireDAC.Comp.UI,
+  FireDAC.Comp.Script;
 
 type
   TDM = class(TDataModule)
     FDConnection1: TFDConnection;
     FDPhysSQLiteDriverLink1: TFDPhysSQLiteDriverLink;
+    FDScript1: TFDScript;
+    FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     procedure DataModuleDestroy(Sender: TObject);
   private
     { Private declarations }
@@ -20,6 +25,8 @@ type
     function GetDBPath: string;
     procedure Conectar;
     procedure Desconectar;
+    procedure CriarBanco(const Path: string);
+    procedure ExecutarScriptSQL(const FileName: string);
     { Public declarations }
   end;
 
@@ -46,23 +53,57 @@ procedure TDM.Conectar;
 var
   DBPath: string;
 begin
+  FDConnection1.DriverName := 'SQLite';
   DBPath := GetDatabasePathFromINI;
 
-  // Se n�o tem caminho ou arquivo n�o existe
-  if (DBPath = '') or (not FileExists(DBPath)) then
+  // 1. Se não tem caminho → pedir
+  if DBPath = '' then
   begin
     DBPath := SolicitarCaminhoDB;
 
     if DBPath = '' then
-      raise Exception.Create('Banco de dados n�o informado.');
+      raise Exception.Create('Banco de dados não informado.');
 
     SaveDatabasePathToINI(DBPath);
   end;
 
-  FDConnection1.DriverName := 'SQLite';
+  // 2. Se caminho existe mas arquivo não → perguntar se cria
+  if not FileExists(DBPath) then
+  begin
+    if MessageDlg('Banco de dados não encontrado. Deseja criar um novo?',
+      mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    begin
+      CriarBanco(DBPath);
+    end
+    else
+    begin
+      // usuário pode escolher outro
+      DBPath := SolicitarCaminhoDB;
+
+      if (DBPath = '') or (not FileExists(DBPath)) then
+        raise Exception.Create('Banco de dados inválido.');
+
+      SaveDatabasePathToINI(DBPath);
+    end;
+  end;
+
+  // 3. Conectar
   FDConnection1.Params.Database := DBPath;
   FDConnection1.Connected := True;
 end;
+
+procedure TDM.CriarBanco(const Path: string);
+begin
+  ForceDirectories(ExtractFilePath(Path));
+
+  FDConnection1.Params.Database := Path;
+  FDConnection1.Connected := True;
+
+  ExecutarScriptSQL(GetSQLPath);
+
+  FDConnection1.Connected := False;
+end;
+
 
 procedure TDM.DataModuleDestroy(Sender: TObject);
 begin
@@ -73,6 +114,26 @@ procedure TDM.Desconectar;
 begin
   if FDConnection1.Connected then
     FDConnection1.Connected := False;
+end;
+
+procedure TDM.ExecutarScriptSQL(const FileName: string);
+begin
+  if not FileExists(FileName) then
+    raise Exception.Create('Arquivo SQL não encontrado: ' + FileName);
+
+  FDScript1.Connection := FDConnection1;
+
+  FDScript1.SQLScripts.Clear;
+  FDScript1.SQLScripts.Add.SQL.LoadFromFile(FileName);
+
+  FDConnection1.StartTransaction;
+  try
+    FDScript1.ExecuteAll;
+    FDConnection1.Commit;
+  except
+    FDConnection1.Rollback;
+    raise;
+  end;
 end;
 
 end.

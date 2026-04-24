@@ -545,6 +545,7 @@
   OldCreateOrder = False
   Position = poDesigned
   WindowState = wsMaximized
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
@@ -878,5 +879,8 @@
     DataSet = CDataSet_NFE_Entrada
     Left = 312
     Top = 255
+  end
+  object FDQuery1: TFDQuery
+    Left = 344
   end
 end
