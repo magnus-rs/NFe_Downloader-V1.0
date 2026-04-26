@@ -7,11 +7,23 @@
     <Transaction>2026/04/23 23:15:19.000.635,D:\dev.pascal\nfe_downloader\U_DM.pas=</Transaction>
     <Transaction>2026/04/24 09:24:39.000.482,=D:\dev.pascal\nfe_downloader\Unit1.pas</Transaction>
     <Transaction>2026/04/24 14:37:20.000.219,=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas</Transaction>
-    <Transaction>2026/04/24 14:37:57.000.775,D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\data\U_DM.pas</Transaction>
     <Transaction>2026/04/24 14:37:57.000.775,D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.dfm=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\data\U_DM.dfm</Transaction>
+    <Transaction>2026/04/24 14:37:57.000.775,D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\data\U_DM.pas</Transaction>
     <Transaction>2026/04/24 14:45:37.000.509,=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas</Transaction>
     <Transaction>2026/04/24 14:46:19.000.436,D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\utils\U_config.pas</Transaction>
     <Transaction>2026/04/24 14:47:53.000.301,D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\utils\U_config.pas=</Transaction>
     <Transaction>2026/04/24 14:48:53.000.155,=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\utils\U_Config.pas</Transaction>
+    <Transaction>2026/04/24 21:28:43.000.687,=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas</Transaction>
+    <Transaction>2026/04/24 21:33:43.000.369,D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.dfm=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\view\U_CadEmpresa.dfm</Transaction>
+    <Transaction>2026/04/24 21:33:43.000.369,D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\view\U_CadEmpresa.pas</Transaction>
+    <Transaction>2026/04/25 11:10:51.000.561,=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas</Transaction>
+    <Transaction>2026/04/25 11:11:52.000.267,D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\service\U_CertificadoService.pas</Transaction>
+    <Transaction>2026/04/25 11:55:51.000.840,=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas</Transaction>
+    <Transaction>2026/04/25 12:00:56.000.375,D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\utils\U_Entidade.pas</Transaction>
+    <Transaction>2026/04/25 16:50:52.000.963,=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas</Transaction>
+    <Transaction>2026/04/25 16:51:24.000.539,D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\utils\U_Certificado.pas=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas</Transaction>
+    <Transaction>2026/04/26 09:05:57.235,=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas</Transaction>
+    <Transaction>2026/04/26 09:07:06.644,D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\view\U_CadCertificado.dfm=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.dfm</Transaction>
+    <Transaction>2026/04/26 09:07:06.644,D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\view\U_CadCertificado.pas=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas</Transaction>
   </Transactions>
 </BorlandProject>

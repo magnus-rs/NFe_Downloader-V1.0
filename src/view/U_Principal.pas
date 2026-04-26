@@ -1,7 +1,5 @@
 ﻿unit U_Principal;
-
 interface
-
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.Grids, Vcl.ExtCtrls,
@@ -20,8 +18,7 @@ uses
   Datasnap.DBClient, FileCtrl, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client;
-
+  FireDAC.Comp.Client, U_CadCertificado;
 type
   TForm_Principal = class(TForm)
     MainMenu1: TMainMenu;
@@ -67,26 +64,275 @@ type
     DBGrid_NFE_Entrada: TDBGrid;
     Panel7: TPanel;
     FDQuery1: TFDQuery;
+    Empresas1: TMenuItem;
+    Pop_TreeView: TPopupMenu;
+    Pop_Incluir: TMenuItem;
+    Pop_Editar: TMenuItem;
+    Pop_Excluir: TMenuItem;
     procedure FormCreate(Sender: TObject);
+    procedure Empresas1Click(Sender: TObject);
+    procedure Pop_EditarClick(Sender: TObject);
+    procedure Pop_ExcluirClick(Sender: TObject);
+    procedure TreeView1MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure Pop_IncluirClick(Sender: TObject);
+    procedure Certificados1Click(Sender: TObject);
   private
+    function GetFilial(const CNPJ: string): string;
+    function GetEntidadeSelecionada: Integer;
+    function GetNodeEntidade(Node: TTreeNode): TTreeNode;
+    function FormatarDocumento(const Doc: string): string;
+    procedure CarregarTreeEntidades;
     { Private declarations }
   public
     { Public declarations }
   end;
-
 var
   Form_Principal: TForm_Principal;
 
 implementation
-
 {$R *.dfm}
 
-uses U_DM;
+uses U_DM, U_CadEmpresa;
+
+function TForm_Principal.GetFilial(const CNPJ: string): string;
+begin
+  if Length(CNPJ) = 14 then
+    Result := Copy(CNPJ, 9, 4)
+  else
+    Result := '----';
+end;
+
+function TForm_Principal.GetEntidadeSelecionada: Integer;
+begin
+  if Assigned(TreeView1.Selected) then
+    Result := Integer(TreeView1.Selected.Data)
+  else
+    Result := 0;
+end;
+
+function TForm_Principal.GetNodeEntidade(Node: TTreeNode): TTreeNode;
+begin
+  while Assigned(Node) and Assigned(Node.Parent) do
+    Node := Node.Parent;
+  Result := Node;
+end;
+
+function TForm_Principal.FormatarDocumento(const Doc: string): string;
+begin
+  if Length(Doc) = 14 then
+    Result := Copy(Doc,1,2)+'.'+Copy(Doc,3,3)+'.'+Copy(Doc,6,3)+'/'+
+              Copy(Doc,9,4)+'-'+Copy(Doc,13,2)
+  else if Length(Doc) = 11 then
+    Result := Copy(Doc,1,3)+'.'+Copy(Doc,4,3)+'.'+Copy(Doc,7,3)+'-'+
+              Copy(Doc,10,2)
+  else
+    Result := Doc;
+end;
+
+procedure TForm_Principal.Pop_EditarClick(Sender: TObject);
+var
+  Node: TTreeNode;
+  ID: Integer;
+  Frm: TForm_CadastroEmpresa;
+begin
+  Node := GetNodeEntidade(TreeView1.Selected);
+  if not Assigned(Node) then
+  begin
+    ShowMessage('Selecione uma entidade.');
+    Exit;
+  end;
+  ID := Integer(Node.Data);
+  if ID = 0 then Exit;
+  Frm := TForm_CadastroEmpresa.Create(nil);
+  try
+    Frm.CarregarEmpresa(ID);
+    if Frm.ShowModal = mrOk then
+      CarregarTreeEntidades; //  atualização automática
+  finally
+    Frm.Free;
+  end;
+end;
+
+procedure TForm_Principal.Pop_ExcluirClick(Sender: TObject);
+var
+  Node: TTreeNode;
+  ID: Integer;
+begin
+  Node := GetNodeEntidade(TreeView1.Selected);
+
+  if not Assigned(Node) then
+  begin
+    ShowMessage('Selecione uma entidade.');
+    Exit;
+  end;
+
+  ID := Integer(Node.Data);
+
+  if ID = 0 then Exit;
+
+  // 🔥 confirmação
+  if MessageDlg('Deseja excluir esta entidade e todos os dados vinculados?',
+    mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
+    Exit;
+
+  DM.FDConnection1.StartTransaction;
+  try
+    //  1. excluir certificados
+    DM.FDConnection1.ExecSQL(
+      'DELETE FROM certificado WHERE entidade_id = :ID',
+      [ID]
+    );
+
+    //  2. excluir distribuição
+    DM.FDConnection1.ExecSQL(
+      'DELETE FROM distribuicao_dfe WHERE entidade_id = :ID',
+      [ID]
+    );
+
+    //  3. excluir entidade
+    DM.FDConnection1.ExecSQL(
+      'DELETE FROM entidade WHERE id = :ID',
+      [ID]
+    );
+
+    DM.FDConnection1.Commit;
+
+    ShowMessage('Entidade excluída com sucesso.');
+
+    CarregarTreeEntidades; // 🔥 atualiza árvore
+
+  except
+    on E: Exception do
+    begin
+      DM.FDConnection1.Rollback;
+      ShowMessage('Erro ao excluir: ' + E.Message);
+    end;
+  end;
+end;
+
+procedure TForm_Principal.Pop_IncluirClick(Sender: TObject);
+begin
+   Form_CadastroEmpresa.Novo;
+   Form_CadastroEmpresa.ShowModal;
+   CarregarTreeEntidades;
+end;
+
+procedure TForm_Principal.TreeView1MouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  Node: TTreeNode;
+begin
+  if Button = mbRight then
+  begin
+    Node := TreeView1.GetNodeAt(X, Y);
+    if Assigned(Node) then
+      TreeView1.Selected := Node;
+  end;
+end;
+
+procedure TForm_Principal.CarregarTreeEntidades;
+var
+  Q: TFDQuery;
+  NodeEntidade, NodeCert, NodeNFe: TTreeNode;
+  TextoEntidade: string;
+begin
+  TreeView1.Items.BeginUpdate;
+  TreeView1.Items.Clear;
+
+  Q := TFDQuery.Create(nil);
+  try
+    Q.Connection := DM.FDConnection1;
+
+    Q.SQL.Text :=
+      'SELECT e.id, e.documento, e.razao_social, ' +
+      'c.numero_serie, c.data_validade, ' +
+      'd.ultima_busca, d.ultimo_nsu ' +
+      'FROM entidade e ' +
+      'LEFT JOIN certificado c ON c.entidade_id = e.id AND c.ativo = 1 ' +
+      'LEFT JOIN distribuicao_dfe d ON d.entidade_id = e.id ' +
+      'ORDER BY e.razao_social';
+
+    Q.Open;
+
+    while not Q.Eof do
+    begin
+      //  Monta texto da entidade
+      TextoEntidade :=
+        GetFilial(Q.FieldByName('documento').AsString) +
+        ' - ' +
+        Q.FieldByName('razao_social').AsString;
+
+      NodeEntidade := TreeView1.Items.Add(nil, TextoEntidade);
+      NodeEntidade.Data := Pointer(Q.FieldByName('id').AsInteger);
+      TreeView1.Items.AddChild(
+          NodeEntidade,
+          'Documento: ' + FormatarDocumento(Q.FieldByName('documento').AsString) );
+
+      // ================= CERTIFICADO =================
+      if not Q.FieldByName('numero_serie').IsNull then
+      begin
+        NodeCert := TreeView1.Items.AddChild(
+          NodeEntidade,
+          'Certificado: ' + Q.FieldByName('numero_serie').AsString
+        );
+
+        TreeView1.Items.AddChild(
+          NodeCert,
+          'Validade: ' +
+          DateToStr(Q.FieldByName('data_validade').AsDateTime)
+        );
+      end
+      else
+      begin
+        TreeView1.Items.AddChild(NodeEntidade, 'Sem certificado');
+      end;
+
+      // ================= NFE =================
+      NodeNFe := TreeView1.Items.AddChild(NodeEntidade, 'NFe');
+
+      if not Q.FieldByName('ultima_busca').IsNull then
+        TreeView1.Items.AddChild(
+          NodeNFe,
+          'Última busca: ' +
+          DateTimeToStr(Q.FieldByName('ultima_busca').AsDateTime)
+        )
+      else
+        TreeView1.Items.AddChild(NodeNFe, 'Última busca: Nunca');
+
+      if not Q.FieldByName('ultimo_nsu').IsNull then
+        TreeView1.Items.AddChild(
+          NodeNFe,
+          'Último NSU: ' +
+          Q.FieldByName('ultimo_nsu').AsString
+        )
+      else
+        TreeView1.Items.AddChild(NodeNFe, 'Último NSU: 0');
+
+      Q.Next;
+    end;
+
+  finally
+    Q.Free;
+    TreeView1.Items.EndUpdate;
+  end;
+end;
+
+procedure TForm_Principal.Certificados1Click(Sender: TObject);
+begin
+   Form_CadCertificado.ShowModal;
+end;
+
+procedure TForm_Principal.Empresas1Click(Sender: TObject);
+begin
+   Form_CadastroEmpresa.Novo;
+   Form_CadastroEmpresa.ShowModal;
+   CarregarTreeEntidades;
+end;
 
 procedure TForm_Principal.FormCreate(Sender: TObject);
 begin
- //continua...
+  CarregarTreeEntidades;
 end;
-
 
 end.

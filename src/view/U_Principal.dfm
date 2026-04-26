@@ -602,8 +602,10 @@
       Height = 658
       Align = alClient
       Indent = 19
+      PopupMenu = Pop_TreeView
       ReadOnly = True
       TabOrder = 0
+      OnMouseDown = TreeView1MouseDown
     end
     object Panel7: TPanel
       Left = 1
@@ -612,7 +614,7 @@
       Height = 21
       Align = alTop
       BevelOuter = bvNone
-      Caption = 'Empresas'
+      Caption = 'Entidades/Empresas'
       TabOrder = 1
     end
   end
@@ -821,6 +823,11 @@
       Caption = 'Configura'#231#245'es'
       object Certificados1: TMenuItem
         Caption = 'Certificados'
+        OnClick = Certificados1Click
+      end
+      object Empresas1: TMenuItem
+        Caption = 'Empresas'
+        OnClick = Empresas1Click
       end
     end
   end
@@ -881,6 +888,37 @@
     Top = 255
   end
   object FDQuery1: TFDQuery
+    SQL.Strings = (
+      'SELECT '
+      '  e.id,'
+      '  e.documento,'
+      '  e.razao_social,'
+      '  c.numero_serie,'
+      '  c.data_validade,'
+      '  d.ultima_busca,'
+      '  d.ultimo_nsu'
+      'FROM entidade e'
+      'LEFT JOIN certificado c '
+      '  ON c.entidade_id = e.id AND c.ativo = 1'
+      'LEFT JOIN distribuicao_dfe d'
+      '  ON d.entidade_id = e.id'
+      'ORDER BY e.razao_social')
     Left = 344
+  end
+  object Pop_TreeView: TPopupMenu
+    Left = 48
+    Top = 181
+    object Pop_Incluir: TMenuItem
+      Caption = 'Incluir'
+      OnClick = Pop_IncluirClick
+    end
+    object Pop_Editar: TMenuItem
+      Caption = 'Editar'
+      OnClick = Pop_EditarClick
+    end
+    object Pop_Excluir: TMenuItem
+      Caption = 'Excluir'
+      OnClick = Pop_ExcluirClick
+    end
   end
 end

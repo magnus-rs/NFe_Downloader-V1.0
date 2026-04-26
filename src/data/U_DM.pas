@@ -3,7 +3,7 @@
 interface
 
 uses
-  System.SysUtils, System.Classes, Vcl.Dialogs, Vcl.Controls,
+  System.SysUtils, System.Classes, Vcl.Dialogs, Vcl.Controls, System.UITypes,
   FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
   FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.VCLUI.Wait,
@@ -54,6 +54,7 @@ var
   DBPath: string;
 begin
   FDConnection1.DriverName := 'SQLite';
+
   DBPath := GetDatabasePathFromINI;
 
   // 1. Se não tem caminho → pedir
@@ -100,7 +101,6 @@ begin
   FDConnection1.Connected := True;
 
   ExecutarScriptSQL(GetSQLPath);
-
   FDConnection1.Connected := False;
 end;
 
@@ -117,14 +117,24 @@ begin
 end;
 
 procedure TDM.ExecutarScriptSQL(const FileName: string);
+var
+  SQLText: TStringList;
 begin
   if not FileExists(FileName) then
     raise Exception.Create('Arquivo SQL não encontrado: ' + FileName);
 
   FDScript1.Connection := FDConnection1;
 
-  FDScript1.SQLScripts.Clear;
-  FDScript1.SQLScripts.Add.SQL.LoadFromFile(FileName);
+  SQLText := TStringList.Create;
+  try
+    SQLText.LoadFromFile(FileName, TEncoding.UTF8); // força UTF-8
+
+    FDScript1.SQLScripts.Clear;
+    FDScript1.SQLScripts.Add.SQL.Text := SQLText.Text;
+
+  finally
+    SQLText.Free;
+  end;
 
   FDConnection1.StartTransaction;
   try
@@ -135,6 +145,7 @@ begin
     raise;
   end;
 end;
+
 
 end.
 
