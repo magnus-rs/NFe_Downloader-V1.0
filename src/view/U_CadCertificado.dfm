@@ -13,7 +13,6 @@ object Form_CadCertificado: TForm_CadCertificado
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
@@ -24,7 +23,6 @@ object Form_CadCertificado: TForm_CadCertificado
     Align = alTop
     Caption = 'Certificados Importados'
     TabOrder = 0
-    ExplicitWidth = 492
   end
   object GroupBox1: TGroupBox
     Left = 8
@@ -47,38 +45,41 @@ object Form_CadCertificado: TForm_CadCertificado
       Height = 143
       BevelOuter = bvLowered
       TabOrder = 0
-      object StringGrid1: TStringGrid
+      object DBGrid1: TDBGrid
         Left = 1
         Top = 1
         Width = 666
         Height = 141
         Align = alClient
-        BorderStyle = bsNone
-        DefaultRowHeight = 16
-        RowCount = 2
+        DataSource = dsCertificados
+        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
         TabOrder = 0
-        ExplicitLeft = 3
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
       end
     end
   end
   object Btn_Buscar: TButton
-    Left = 24
+    Left = 8
     Top = 248
-    Width = 121
+    Width = 106
     Height = 25
     Caption = 'Buscar Certificado'
     TabOrder = 2
   end
   object Btn_Atualizar: TButton
-    Left = 168
+    Left = 232
     Top = 248
-    Width = 121
+    Width = 106
     Height = 25
     Caption = 'Atualizar Lista'
     TabOrder = 3
   end
   object Btn_Vincular: TButton
-    Left = 328
+    Left = 368
     Top = 248
     Width = 233
     Height = 25
@@ -86,12 +87,28 @@ object Form_CadCertificado: TForm_CadCertificado
     TabOrder = 4
   end
   object Btn_Cancelar: TButton
-    Left = 584
+    Left = 607
     Top = 248
     Width = 75
     Height = 25
     Caption = 'Cancelar'
     TabOrder = 5
-    OnClick = Btn_CancelarClick
+  end
+  object Btn_Excluir: TButton
+    Left = 120
+    Top = 248
+    Width = 106
+    Height = 25
+    Caption = 'Excluir Certificado'
+    TabOrder = 6
+  end
+  object qryCertificados: TFDQuery
+    Left = 451
+    Top = 71
+  end
+  object dsCertificados: TDataSource
+    DataSet = qryCertificados
+    Left = 451
+    Top = 119
   end
 end

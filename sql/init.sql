@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS entidade (
 
 CREATE TABLE IF NOT EXISTS certificado (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    entidade_id INTEGER NOT NULL,
+    entidade_id INTEGER NULL,
     caminho_pfx TEXT NOT NULL,
     senha TEXT,
     data_validade DATE,

@@ -22,8 +22,8 @@
     <Transaction>2026/04/25 12:00:56.000.375,D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\utils\U_Entidade.pas</Transaction>
     <Transaction>2026/04/25 16:50:52.000.963,=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas</Transaction>
     <Transaction>2026/04/25 16:51:24.000.539,D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\utils\U_Certificado.pas=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas</Transaction>
-    <Transaction>2026/04/26 09:05:57.235,=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas</Transaction>
-    <Transaction>2026/04/26 09:07:06.644,D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\view\U_CadCertificado.dfm=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.dfm</Transaction>
-    <Transaction>2026/04/26 09:07:06.644,D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\view\U_CadCertificado.pas=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas</Transaction>
+    <Transaction>2026/04/26 09:05:57.000.235,=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas</Transaction>
+    <Transaction>2026/04/26 09:07:06.000.644,D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\view\U_CadCertificado.dfm=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.dfm</Transaction>
+    <Transaction>2026/04/26 09:07:06.000.644,D:\dev.pascal\GITHUB\nfe_downloader-V1.0\src\view\U_CadCertificado.pas=D:\dev.pascal\GITHUB\nfe_downloader-V1.0\Unit1.pas</Transaction>
   </Transactions>
 </BorlandProject>

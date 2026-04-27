@@ -4,21 +4,26 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Grids;
+  System.DateUtils, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Grids,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
+  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
+  FireDAC.Stan.Async, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client, Vcl.DBGrids;
 
 type
   TForm_CadCertificado = class(TForm)
     Panel1: TPanel;
     GroupBox1: TGroupBox;
     Panel2: TPanel;
-    StringGrid1: TStringGrid;
     Label1: TLabel;
     Btn_Buscar: TButton;
     Btn_Atualizar: TButton;
     Btn_Vincular: TButton;
     Btn_Cancelar: TButton;
-    procedure Btn_CancelarClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    Btn_Excluir: TButton;
+    qryCertificados: TFDQuery;
+    dsCertificados: TDataSource;
+    DBGrid1: TDBGrid;
   private
     { Private declarations }
   public
@@ -31,16 +36,5 @@ var
 implementation
 
 {$R *.dfm}
-
-procedure TForm_CadCertificado.Btn_CancelarClick(Sender: TObject);
-begin
-   ModalResult := mrCancel;
-end;
-
-procedure TForm_CadCertificado.FormClose(Sender: TObject;
-  var Action: TCloseAction);
-begin
-   Btn_CancelarClick(Sender);
-end;
 
 end.
