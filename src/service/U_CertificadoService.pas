@@ -8,6 +8,7 @@ uses
 type
   TInfoCertificado = record
     Validade: TDateTime;
+    Ativacao: TDateTime;
     Documento: string; // CPF ou CNPJ
     Nome: string;
     NumeroSerie: string;
@@ -43,6 +44,7 @@ begin
     ACBr.SSL.CarregarCertificado;
     //  Preencher estrutura
     Result.Validade := DateOf(ACBr.SSL.CertDataVenc); // sem horário
+    Result.Ativacao := DateOf(ACBr.SSL.CertDataVenc); // sem horário
     Result.Documento := ACBr.SSL.CertCNPJ;
     Result.Nome := ACBr.SSL.CertRazaoSocial;
     Result.NumeroSerie := ACBr.SSL.CertNumeroSerie;

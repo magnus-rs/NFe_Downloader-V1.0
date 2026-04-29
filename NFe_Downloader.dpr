@@ -10,14 +10,15 @@ uses
   U_CertificadoService in 'src\service\U_CertificadoService.pas',
   U_Entidade in 'src\utils\U_Entidade.pas',
   U_Certificado in 'src\utils\U_Certificado.pas',
-  U_CadCertificado in 'src\view\U_CadCertificado.pas' {Form_CadCertificado};
+  U_CadCertificado in 'src\view\U_CadCertificado.pas' {Form_CadCertificado},
+  U_CertificadoRepository in 'src\repository\U_CertificadoRepository.pas';
 
 {$R *.res}
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TDM, DM);
-      try
+  try
         DM.Conectar;
       except
         on E: Exception do

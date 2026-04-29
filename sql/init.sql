@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS certificado (
     entidade_id INTEGER NULL,
     caminho_pfx TEXT NOT NULL,
     senha TEXT,
+	data_ativacao DATE,
     data_validade DATE,
 	numero_serie TEXT NOT NULL,
     ativo INTEGER DEFAULT 1,

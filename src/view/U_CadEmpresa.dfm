@@ -171,7 +171,6 @@ object Form_CadastroEmpresa: TForm_CadastroEmpresa
     Align = alTop
     Caption = 'Cadastro de Empresas'
     TabOrder = 9
-    ExplicitWidth = 492
   end
   object FDQuery1: TFDQuery
     Left = 376

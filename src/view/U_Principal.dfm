@@ -814,13 +814,14 @@
       Caption = 'Arquivo'
       object Sair1: TMenuItem
         Caption = 'Sair'
+        OnClick = Sair1Click
       end
     end
     object Sair2: TMenuItem
       Caption = 'Ferramentas'
     end
-    object Configuracoes1: TMenuItem
-      Caption = 'Configura'#231#245'es'
+    object Cadastros1: TMenuItem
+      Caption = 'Cadastros'
       object Certificados1: TMenuItem
         Caption = 'Certificados'
         OnClick = Certificados1Click

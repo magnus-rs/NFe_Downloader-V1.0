@@ -25,7 +25,7 @@ type
     Arquivo1: TMenuItem;
     Sair1: TMenuItem;
     Sair2: TMenuItem;
-    Configuracoes1: TMenuItem;
+    Cadastros1: TMenuItem;
     Certificados1: TMenuItem;
     ToolBar1: TToolBar;
     StatusBar1: TStatusBar;
@@ -77,6 +77,7 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure Pop_IncluirClick(Sender: TObject);
     procedure Certificados1Click(Sender: TObject);
+    procedure Sair1Click(Sender: TObject);
   private
     function GetFilial(const CNPJ: string): string;
     function GetEntidadeSelecionada: Integer;
@@ -152,6 +153,7 @@ begin
   finally
     Frm.Free;
   end;
+  CarregarTreeEntidades;
 end;
 
 procedure TForm_Principal.Pop_ExcluirClick(Sender: TObject);
@@ -171,7 +173,7 @@ begin
 
   if ID = 0 then Exit;
 
-  // 🔥 confirmação
+  //  confirmação
   if MessageDlg('Deseja excluir esta entidade e todos os dados vinculados?',
     mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
     Exit;
@@ -218,6 +220,11 @@ begin
    CarregarTreeEntidades;
 end;
 
+procedure TForm_Principal.Sair1Click(Sender: TObject);
+begin
+   Close;
+end;
+
 procedure TForm_Principal.TreeView1MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
@@ -235,7 +242,9 @@ procedure TForm_Principal.CarregarTreeEntidades;
 var
   Q: TFDQuery;
   NodeEntidade, NodeCert, NodeNFe: TTreeNode;
-  TextoEntidade: string;
+  TextoEntidade, TipoDoc, TipoCert: string;
+  Doc: string;
+  DataValidade: TDate;
 begin
   TreeView1.Items.BeginUpdate;
   TreeView1.Items.Clear;
@@ -246,7 +255,7 @@ begin
 
     Q.SQL.Text :=
       'SELECT e.id, e.documento, e.razao_social, ' +
-      'c.numero_serie, c.data_validade, ' +
+      'c.numero_serie, c.data_ativacao, c.data_validade, c.caminho_pfx, ' +
       'd.ultima_busca, d.ultimo_nsu ' +
       'FROM entidade e ' +
       'LEFT JOIN certificado c ON c.entidade_id = e.id AND c.ativo = 1 ' +
@@ -257,48 +266,81 @@ begin
 
     while not Q.Eof do
     begin
-      //  Monta texto da entidade
-      TextoEntidade :=
-        GetFilial(Q.FieldByName('documento').AsString) +
-        ' - ' +
-        Q.FieldByName('razao_social').AsString;
+      Doc := Q.FieldByName('documento').AsString;
+
+      //  Tipo documento
+      if Length(Doc) = 11 then
+        TipoDoc := 'CPF'
+      else
+        TipoDoc := 'CNPJ';
+
+      //  Nó principal (melhor formatado)
+      TextoEntidade := GetFilial(Q.FieldByName('documento').AsString) + ' : ' +
+                                 Q.FieldByName('razao_social').AsString;
 
       NodeEntidade := TreeView1.Items.Add(nil, TextoEntidade);
       NodeEntidade.Data := Pointer(Q.FieldByName('id').AsInteger);
+
+      //  Documento formatado
       TreeView1.Items.AddChild(
-          NodeEntidade,
-          'Documento: ' + FormatarDocumento(Q.FieldByName('documento').AsString) );
+        NodeEntidade,
+        TipoDoc + ': ' + FormatarDocumento(Doc)
+      );
 
       // ================= CERTIFICADO =================
+
       if not Q.FieldByName('numero_serie').IsNull then
       begin
-        NodeCert := TreeView1.Items.AddChild(
-          NodeEntidade,
-          'Certificado: ' + Q.FieldByName('numero_serie').AsString
+        //  Detectar tipo (A1/A3 simples)
+        if Q.FieldByName('caminho_pfx').AsString <> '' then
+          TipoCert := 'A1'
+        else
+          TipoCert := 'A3';
+
+        DataValidade := Q.FieldByName('data_validade').AsDateTime;
+
+        //  Nó principal do certificado
+        if DataValidade < Date then
+          NodeCert := TreeView1.Items.AddChild(
+            NodeEntidade,
+            'CERTIFICADO (' + TipoCert + ') - VENCIDO'
+          )
+        else
+          NodeCert := TreeView1.Items.AddChild(
+            NodeEntidade,
+            'CERTIFICADO (' + TipoCert + ')'
+          );
+
+        //  Subitens
+        TreeView1.Items.AddChild(
+          NodeCert,
+          'Início: ' +
+          DateToStr(Q.FieldByName('data_ativacao').AsDateTime)
         );
 
         TreeView1.Items.AddChild(
           NodeCert,
-          'Validade: ' +
-          DateToStr(Q.FieldByName('data_validade').AsDateTime)
+          'Fim: ' +
+          DateToStr(DataValidade)
         );
       end
       else
       begin
-        TreeView1.Items.AddChild(NodeEntidade, 'Sem certificado');
+        TreeView1.Items.AddChild(NodeEntidade, 'CERTIFICADO: Nenhum');
       end;
 
       // ================= NFE =================
-      NodeNFe := TreeView1.Items.AddChild(NodeEntidade, 'NFe');
+
+      NodeNFe := TreeView1.Items.AddChild(NodeEntidade, 'NFe Dados');
 
       if not Q.FieldByName('ultima_busca').IsNull then
         TreeView1.Items.AddChild(
           NodeNFe,
-          'Última busca: ' +
+          'Última Busca: ' +
           DateTimeToStr(Q.FieldByName('ultima_busca').AsDateTime)
         )
       else
-        TreeView1.Items.AddChild(NodeNFe, 'Última busca: Nunca');
+        TreeView1.Items.AddChild(NodeNFe, 'Última Busca: Nunca');
 
       if not Q.FieldByName('ultimo_nsu').IsNull then
         TreeView1.Items.AddChild(
@@ -321,6 +363,7 @@ end;
 procedure TForm_Principal.Certificados1Click(Sender: TObject);
 begin
    Form_CadCertificado.ShowModal;
+   CarregarTreeEntidades;
 end;
 
 procedure TForm_Principal.Empresas1Click(Sender: TObject);

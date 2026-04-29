@@ -276,6 +276,7 @@ begin
         Cert.EntidadeID := FEntidade.ID;
         Cert.Caminho := FCertCaminho;
         Cert.Senha := FCertSenha;
+        Cert.DataAtivacao := InfoCert.Ativacao;
         Cert.DataValidade := InfoCert.Validade;
         Cert.NumeroSerie := InfoCert.NumeroSerie;
         Cert.Ativo := True;

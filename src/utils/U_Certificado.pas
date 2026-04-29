@@ -13,6 +13,7 @@ type
     FEntidadeID: Integer;
     FCaminho: string;
     FSenha: string;
+    FDataAtivacao: TDateTime;
     FDataValidade: TDateTime;
     FNumeroSerie: string;
     FAtivo: Boolean;
@@ -22,6 +23,7 @@ type
     property EntidadeID: Integer read FEntidadeID write FEntidadeID;
     property Caminho: string read FCaminho write FCaminho;
     property Senha: string read FSenha write FSenha;
+    property DataAtivacao: TDateTime read FDataAtivacao write FDataAtivacao;
     property DataValidade: TDateTime read FDataValidade write FDataValidade;
     Property NumeroSerie: string read FNumeroSerie write FNumeroSerie;
     property Ativo: Boolean read FAtivo write FAtivo;
@@ -43,6 +45,7 @@ begin
   FEntidadeID := 0;
   FCaminho := '';
   FSenha := '';
+  FDataAtivacao := 0;
   FDataValidade := 0;
   FAtivo := True;
 end;
@@ -67,6 +70,7 @@ begin
       FEntidadeID := Q.FieldByName('entidade_id').AsInteger;
       FCaminho := Q.FieldByName('caminho_pfx').AsString;
       FSenha := Q.FieldByName('senha').AsString;
+      FDataAtivacao := Q.FieldByName('data_ativacao').AsDateTime;
       FDataValidade := Q.FieldByName('data_validade').AsDateTime;
       FAtivo := Q.FieldByName('ativo').AsInteger = 1;
     end;
@@ -92,12 +96,13 @@ begin
   DesativarOutros;
 
   DM.FDConnection1.ExecSQL(
-    'INSERT INTO certificado (entidade_id, caminho_pfx, senha, data_validade, numero_serie, ativo) ' +
-    'VALUES (?, ?, ?, ?, ?, ?)',
+    'INSERT INTO certificado (entidade_id, caminho_pfx, senha, data_ativacao, data_validade, numero_serie, ativo) ' +
+    'VALUES (?, ?, ?, ?, ?, ?, ?)',
     [
       FEntidadeID,
       FCaminho,
       FSenha,
+      FDataAtivacao,
       FDataValidade,
       FNumeroSerie,
       Ord(FAtivo)
