@@ -32,6 +32,7 @@ type
     procedure Salvar;
     procedure Excluir;
 
+    function OnlyNumber(const S: string): string;
     function TipoToInt: Integer;
     procedure IntToTipo(Value: Integer);
   end;
@@ -98,6 +99,17 @@ begin
   end;
 end;
 
+function TEntidade.OnlyNumber(const S: string): string;
+var
+  C: Char;
+begin
+  Result := '';
+  for C in S do
+    if CharInSet(C,['0'..'9']) then
+      Result := Result + C;
+
+end;
+
 procedure TEntidade.Salvar;
 begin
   if FID = 0 then
@@ -107,7 +119,7 @@ begin
       'VALUES (?, ?, ?, ?, ?, ?)',
       [
         TipoToInt,
-        FDocumento,
+        OnlyNumber(FDocumento),
         FRazaoSocial,
         FEmail,
         FUFID,
@@ -125,7 +137,7 @@ begin
       'WHERE id = ?',
       [
         TipoToInt,
-        FDocumento,
+        OnlyNumber(FDocumento),
         FRazaoSocial,
         FEmail,
         FUFID,

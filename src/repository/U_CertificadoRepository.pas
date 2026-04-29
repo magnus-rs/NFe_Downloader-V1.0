@@ -15,6 +15,7 @@ type
   public
     constructor Create(AConn: TFDCustomConnection);
 
+    function OnlyNumber(const S:string): string;
     function ImportarPFX(const Caminho, Senha: string): Integer;
     procedure VincularCertificado(CertId, EntidadeId: Integer);
     procedure Ativar(CertId, EntidadeId: Integer);
@@ -29,6 +30,17 @@ constructor TCertificadoRepository.Create(AConn: TFDCustomConnection);
 begin
   FConn := AConn;
 end;
+
+function TCertificadoRepository.OnlyNumber(const S: string): string;
+var
+  C: Char;
+begin
+  Result := '';
+  for C in S do
+    if CharInSet(C,['0'..'9']) then
+      Result := Result + C;
+end;
+
 function TCertificadoRepository.ImportarPFX(const Caminho, Senha: string): Integer;
 var
   Q: TFDQuery;
@@ -56,7 +68,7 @@ begin
     DataAtivacao := SSL.DadosCertificado.DataInicioValidade;
 
     //  CNPJ (sem máscara)
-    CNPJ := SSL.DadosCertificado.CNPJ;
+    CNPJ := OnlyNumber(SSL.DadosCertificado.CNPJ);
 
     Q.Connection := FConn;
 

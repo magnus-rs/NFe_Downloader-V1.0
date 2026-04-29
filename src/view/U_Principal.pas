@@ -376,6 +376,8 @@ end;
 procedure TForm_Principal.FormCreate(Sender: TObject);
 begin
   CarregarTreeEntidades;
+  DateTimePicker2.DateTime := Now();
+  DateTimePicker1.DateTime := (Now()-60);
 end;
 
 end.
