@@ -121,6 +121,12 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="src\repository\U_CertificadoRepository.pas"/>
+        <DCCReference Include="src\view\U_Configurações.pas">
+            <Form>Form_Configuracoes</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="src\service\U_configService.pas"/>
+        <DCCReference Include="src\utils\U_XMLUtils.pas"/>
         <BuildConfiguration Include="Debug">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

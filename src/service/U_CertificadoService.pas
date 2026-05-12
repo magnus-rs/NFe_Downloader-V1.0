@@ -3,7 +3,18 @@ unit U_CertificadoService;
 interface
 
 uses
-  System.SysUtils, System.DateUtils , ACBrNFe, ACBrDFeSSL;
+  System.SysUtils, System.DateUtils ,
+  ACBrBase,
+  ACBrDFe,
+  ACBrNFe,
+  ACBrDFeSSL,
+  ACBrNFeConfiguracoes,
+  ACBrDFeConfiguracoes,
+  pcnConversaoNFe,
+  pcnConversao,
+  ACBrNFeNotasFiscais,
+  ACBrNFeWebServices
+  ;
 
 type
   TInfoCertificado = record

@@ -3,7 +3,7 @@ object Form_CadastroEmpresa: TForm_CadastroEmpresa
   Top = 0
   BorderStyle = bsSingle
   Caption = 'Base de Cadastros'
-  ClientHeight = 315
+  ClientHeight = 358
   ClientWidth = 502
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -53,22 +53,22 @@ object Form_CadastroEmpresa: TForm_CadastroEmpresa
     Height = 13
   end
   object Label6: TLabel
-    Left = 24
-    Top = 189
+    Left = 21
+    Top = 223
     Width = 56
     Height = 13
     Caption = 'Certificado:'
   end
   object Bevel1: TBevel
     Left = 8
-    Top = 176
+    Top = 210
     Width = 476
     Height = 57
     Shape = bsFrame
   end
   object Label_Certificado: TLabel
     Left = 78
-    Top = 213
+    Top = 247
     Width = 311
     Height = 13
     Caption = 
@@ -129,7 +129,7 @@ object Form_CadastroEmpresa: TForm_CadastroEmpresa
   end
   object Btn_Salvar: TButton
     Left = 112
-    Top = 256
+    Top = 290
     Width = 113
     Height = 25
     Caption = 'Salvar'
@@ -143,20 +143,21 @@ object Form_CadastroEmpresa: TForm_CadastroEmpresa
     Height = 21
     TabOrder = 0
     Text = 'CNPJ'
+    OnChange = Combo_DocChange
     Items.Strings = (
       'CNPJ'
       'CPF')
   end
   object Edit_Certificado: TEdit
     Left = 83
-    Top = 186
+    Top = 220
     Width = 389
     Height = 21
     TabOrder = 7
   end
   object Btn_Cancelar: TButton
     Left = 260
-    Top = 256
+    Top = 290
     Width = 113
     Height = 25
     Caption = 'Cancelar'
@@ -171,6 +172,19 @@ object Form_CadastroEmpresa: TForm_CadastroEmpresa
     Align = alTop
     Caption = 'Cadastro de Empresas'
     TabOrder = 9
+  end
+  object Group_Ambiente: TRadioGroup
+    Left = 134
+    Top = 160
+    Width = 219
+    Height = 44
+    Caption = ' Ambiente '
+    Columns = 2
+    ItemIndex = 0
+    Items.Strings = (
+      'Produ'#231#227'o'
+      'Homologa'#231#227'o')
+    TabOrder = 10
   end
   object FDQuery1: TFDQuery
     Left = 376

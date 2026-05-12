@@ -5,7 +5,10 @@ object DM: TDM
   Width = 455
   object FDConnection1: TFDConnection
     Params.Strings = (
-      'CharacterSet=UTF-8')
+      'CharacterSet=UTF-8'
+      'DriverID=SQLite'
+      'Database=C:\dev.pascal\GITHUB\NFe_Downloader-V1.0\dados\nfe.db')
+    LoginPrompt = False
     Left = 104
     Top = 96
   end

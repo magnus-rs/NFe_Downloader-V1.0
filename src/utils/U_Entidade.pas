@@ -16,6 +16,7 @@ type
     FRazaoSocial: string;
     FEmail: string;
     FUFID: Integer;
+    FAmbiente: integer;
     FAtivo: Boolean;
 
   public
@@ -25,6 +26,7 @@ type
     property RazaoSocial: string read FRazaoSocial write FRazaoSocial;
     property Email: string read FEmail write FEmail;
     property UFID: Integer read FUFID write FUFID;
+    property Ambiente: integer read FAmbiente write FAmbiente;
     property Ativo: Boolean read FAtivo write FAtivo;
 
     procedure Limpar;
@@ -49,6 +51,7 @@ begin
   FUFID := 0;
   FAtivo := True;
   FTipo := tdCNPJ;
+  FAmbiente := 0;
 end;
 
 function TEntidade.TipoToInt: Integer;
@@ -89,6 +92,7 @@ begin
       FRazaoSocial := Q.FieldByName('razao_social').AsString;
       FEmail := Q.FieldByName('email').AsString;
       FUFID := Q.FieldByName('uf_id').AsInteger;
+      FAmbiente := Q.FieldByName('ambiente').AsInteger;
       FAtivo := Q.FieldByName('ativo').AsInteger = 1;
 
       IntToTipo(Q.FieldByName('tipo').AsInteger);
@@ -115,15 +119,17 @@ begin
   if FID = 0 then
   begin
     DM.FDConnection1.ExecSQL(
-      'INSERT INTO entidade (tipo, documento, razao_social, email, uf_id, ativo) ' +
-      'VALUES (?, ?, ?, ?, ?, ?)',
+      'INSERT INTO entidade (tipo, documento, razao_social, email, uf_id, ambiente, ativo) ' +
+      'VALUES (?, ?, ?, ?, ?, ?, ?)',
       [
         TipoToInt,
         OnlyNumber(FDocumento),
         FRazaoSocial,
         FEmail,
         FUFID,
+        FAmbiente,
         Ord(FAtivo)
+
       ]
     );
 
@@ -133,7 +139,7 @@ begin
   else
   begin
     DM.FDConnection1.ExecSQL(
-      'UPDATE entidade SET tipo = ?, documento = ?, razao_social = ?, email = ?, uf_id = ?, ativo = ? ' +
+      'UPDATE entidade SET tipo = ?, documento = ?, razao_social = ?, email = ?, uf_id = ?, ativo = ?, ambiente = ? ' +
       'WHERE id = ?',
       [
         TipoToInt,
@@ -142,6 +148,7 @@ begin
         FEmail,
         FUFID,
         Ord(FAtivo),
+        FAmbiente,
         FID
       ]
     );

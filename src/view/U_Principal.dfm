@@ -1,4 +1,4 @@
-﻿object Form_Principal: TForm_Principal
+object Form_Principal: TForm_Principal
   Left = 0
   Top = 0
   Caption = 'NFe Downloader'
@@ -546,20 +546,23 @@
   Position = poDesigned
   WindowState = wsMaximized
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
     Left = 233
-    Top = 29
+    Top = 22
     Width = 2
-    Height = 681
+    Height = 688
     ExplicitLeft = 185
+    ExplicitTop = 29
     ExplicitHeight = 701
   end
   object Splitter2: TSplitter
     Left = 1068
-    Top = 29
-    Height = 681
+    Top = 22
+    Height = 688
     Align = alRight
     ExplicitLeft = 296
     ExplicitTop = 32
@@ -576,9 +579,40 @@
     Left = 0
     Top = 0
     Width = 1304
-    Height = 29
+    Height = 22
+    ButtonWidth = 86
     Caption = 'ToolBar1'
     TabOrder = 0
+    object ToolButton1: TToolButton
+      Left = 0
+      Top = 0
+      Width = 6
+      Caption = 'ToolButton1'
+      Style = tbsSeparator
+    end
+    object Btn_BuscaSefaz: TSpeedButton
+      Left = 6
+      Top = 0
+      Width = 119
+      Height = 22
+      Caption = 'Buscar na SEFAZ'
+      OnClick = Btn_BuscaSefazClick
+    end
+    object ToolButton2: TToolButton
+      Left = 125
+      Top = 0
+      Width = 6
+      Caption = 'ToolButton2'
+      ImageIndex = 0
+      Style = tbsSeparator
+    end
+    object Btn_DownloadXML: TSpeedButton
+      Left = 131
+      Top = 0
+      Width = 119
+      Height = 22
+      Caption = 'Download de XML'
+    end
   end
   object StatusBar1: TStatusBar
     Left = 0
@@ -589,9 +623,9 @@
   end
   object Panel1: TPanel
     Left = 0
-    Top = 29
+    Top = 22
     Width = 233
-    Height = 681
+    Height = 688
     Align = alLeft
     Caption = 'Panel1'
     TabOrder = 2
@@ -599,12 +633,13 @@
       Left = 1
       Top = 22
       Width = 231
-      Height = 658
+      Height = 665
       Align = alClient
       Indent = 19
       PopupMenu = Pop_TreeView
       ReadOnly = True
       TabOrder = 0
+      OnChange = TreeView1Change
       OnMouseDown = TreeView1MouseDown
     end
     object Panel7: TPanel
@@ -620,9 +655,9 @@
   end
   object Panel2: TPanel
     Left = 1071
-    Top = 29
+    Top = 22
     Width = 233
-    Height = 681
+    Height = 688
     Align = alRight
     Caption = 'Panel2'
     TabOrder = 3
@@ -640,7 +675,7 @@
       Left = 1
       Top = 23
       Width = 231
-      Height = 657
+      Height = 664
       Align = alClient
       Indent = 19
       TabOrder = 1
@@ -648,9 +683,9 @@
   end
   object Panel4: TPanel
     Left = 235
-    Top = 29
+    Top = 22
     Width = 833
-    Height = 681
+    Height = 688
     Align = alClient
     Caption = 'Panel4'
     TabOrder = 4
@@ -681,6 +716,7 @@
         Width = 54
         Height = 22
         Caption = 'Buscar'
+        OnClick = Button_BuscarClick
       end
       object DateTimePicker1: TDateTimePicker
         Left = 68
@@ -705,7 +741,7 @@
       Left = 1
       Top = 42
       Width = 831
-      Height = 619
+      Height = 626
       ActivePage = TabSheet1
       Align = alClient
       TabOrder = 1
@@ -715,75 +751,16 @@
           Left = 0
           Top = 0
           Width = 823
-          Height = 591
+          Height = 598
           Align = alClient
           DataSource = DataSource_NFE_Entrada
+          Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgMultiSelect, dgTitleClick, dgTitleHotTrack]
           TabOrder = 0
           TitleFont.Charset = DEFAULT_CHARSET
           TitleFont.Color = clWindowText
           TitleFont.Height = -11
           TitleFont.Name = 'Tahoma'
           TitleFont.Style = []
-          Columns = <
-            item
-              Expanded = False
-              FieldName = 'NFe N'#250'mero'
-              Width = 100
-              Visible = True
-            end
-            item
-              Expanded = False
-              FieldName = 'NFe S'#233'rie'
-              Width = 60
-              Visible = True
-            end
-            item
-              Expanded = False
-              FieldName = 'Tipo'
-              Width = 60
-              Visible = True
-            end
-            item
-              Expanded = False
-              FieldName = 'Emiss'#227'o'
-              Visible = True
-            end
-            item
-              Expanded = False
-              FieldName = 'Valor'
-              Width = 100
-              Visible = True
-            end
-            item
-              Expanded = False
-              FieldName = 'Vencimento'
-              Width = 85
-              Visible = True
-            end
-            item
-              Expanded = False
-              FieldName = 'Emitente'
-              Width = 360
-              Visible = True
-            end
-            item
-              Expanded = False
-              FieldName = 'CFOP'
-              Width = 60
-              Visible = True
-            end
-            item
-              Expanded = False
-              FieldName = 'Natureza'
-              Width = 150
-              Visible = True
-            end
-            item
-              Expanded = False
-              FieldName = 'NFe Chave'
-              Width = 360
-              Visible = True
-            end>
         end
       end
       object TabSheet2: TTabSheet
@@ -793,7 +770,7 @@
     end
     object StatusBar2: TStatusBar
       Left = 1
-      Top = 661
+      Top = 668
       Width = 831
       Height = 19
       Panels = <
@@ -817,9 +794,6 @@
         OnClick = Sair1Click
       end
     end
-    object Sair2: TMenuItem
-      Caption = 'Ferramentas'
-    end
     object Cadastros1: TMenuItem
       Caption = 'Cadastros'
       object Certificados1: TMenuItem
@@ -831,12 +805,31 @@
         OnClick = Empresas1Click
       end
     end
+    object Manifestar1: TMenuItem
+      Caption = 'Manifestar'
+      object CienciadeOperacao1: TMenuItem
+        Caption = 'Ci'#234'ncia de Opera'#231#227'o'
+      end
+      object Confirmacao: TMenuItem
+        Caption = 'Confirma'#231#227'o de Opera'#231#227'o'
+      end
+      object naorealizada1: TMenuItem
+        Caption = 'Opera'#231#227'o N'#227'o Realizada'
+      end
+      object Desconhecida: TMenuItem
+        Caption = 'Opera'#231#227'o Desconhecida'
+      end
+    end
+    object Configuracoes: TMenuItem
+      Caption = 'Configura'#231#245'es'
+      OnClick = ConfiguracoesClick
+    end
   end
   object ACBrNFe1: TACBrNFe
-    Configuracoes.Geral.SSLLib = libNone
-    Configuracoes.Geral.SSLCryptLib = cryNone
-    Configuracoes.Geral.SSLHttpLib = httpNone
-    Configuracoes.Geral.SSLXmlSignLib = xsNone
+    Configuracoes.Geral.SSLLib = libOpenSSL
+    Configuracoes.Geral.SSLCryptLib = cryOpenSSL
+    Configuracoes.Geral.SSLHttpLib = httpOpenSSL
+    Configuracoes.Geral.SSLXmlSignLib = xsLibXml2
     Configuracoes.Geral.FormatoAlerta = 'TAG:%TAGNIVEL% ID:%ID%/%TAG%(%DESCRICAO%) - %MSG%.'
     Configuracoes.Arquivos.OrdenacaoPath = <>
     Configuracoes.WebServices.UF = 'RS'
@@ -847,64 +840,203 @@
     Left = 512
     Top = 65528
   end
-  object CDataSet_NFE_Entrada: TClientDataSet
-    Aggregates = <>
-    Params = <>
-    Left = 312
-    Top = 199
-    object CDataSet_NFE_EntradaNFeNúmero: TStringField
-      FieldName = 'NFe N'#250'mero'
-    end
-    object CDataSet_NFE_EntradaNFeSérie: TStringField
-      FieldName = 'NFe S'#233'rie'
-    end
-    object CDataSet_NFE_EntradaNFeCTeTipo: TStringField
-      FieldName = 'Tipo'
-    end
-    object CDataSet_NFE_EntradaEmissão: TStringField
-      FieldName = 'Emiss'#227'o'
-    end
-    object CDataSet_NFE_EntradaValor: TCurrencyField
-      FieldName = 'Valor'
-    end
-    object CDataSet_NFE_EntradaVencimento: TDateField
-      FieldName = 'Vencimento'
-    end
-    object CDataSet_NFE_EntradaEmitente: TStringField
-      FieldName = 'Emitente'
-    end
-    object CDataSet_NFE_EntradaCFOP: TStringField
-      FieldName = 'CFOP'
-    end
-    object CDataSet_NFE_EntradaNatureza: TStringField
-      FieldName = 'Natureza'
-    end
-    object CDataSet_NFE_EntradaNFeChave: TStringField
-      FieldName = 'NFe Chave'
-    end
-  end
   object DataSource_NFE_Entrada: TDataSource
-    DataSet = CDataSet_NFE_Entrada
+    DataSet = FDQuery1
     Left = 312
     Top = 255
   end
   object FDQuery1: TFDQuery
+    Connection = DM.FDConnection1
     SQL.Strings = (
-      'SELECT '
-      '  e.id,'
-      '  e.documento,'
-      '  e.razao_social,'
-      '  c.numero_serie,'
-      '  c.data_validade,'
-      '  d.ultima_busca,'
-      '  d.ultimo_nsu'
-      'FROM entidade e'
-      'LEFT JOIN certificado c '
-      '  ON c.entidade_id = e.id AND c.ativo = 1'
-      'LEFT JOIN distribuicao_dfe d'
-      '  ON d.entidade_id = e.id'
-      'ORDER BY e.razao_social')
+      'SELECT'
+      ''
+      '    CASE'
+      '        WHEN tipo_xml = '#39'PROC'#39' THEN '#39'SIM'#39
+      '        ELSE '#39'N'#195'O'#39
+      '    END AS XML,'
+      ''
+      '    numero,'
+      '    serie,'
+      ''
+      '    tipo_xml AS tipo,'
+      ''
+      '    status,'
+      ''
+      '    emitente_cnpj,'
+      '    emitente_nome,'
+      ''
+      '    cfop,'
+      '    natureza,'
+      ''
+      '    uf,'
+      ''
+      '    data_emissao,'
+      ''
+      '    chave,'
+      ''
+      '    dest_cnpj,'
+      '    dest_nome,'
+      ''
+      '    CASE'
+      '        WHEN cnpj = dest_cnpj THEN '#39'ENTRADA'#39
+      '        ELSE '#39'SAIDA'#39
+      '    END AS tipo_doc,'
+      ''
+      '    manifestacao,'
+      ''
+      '    valor_total,'
+      ''
+      '    xml_rel_path'
+      ''
+      'FROM nfe'
+      ''
+      'WHERE'
+      ' data_emissao BETWEEN :DATA_INI AND :DATA_FIM'
+      ' AND dest_cnpj = :CNPJ'
+      ''
+      'ORDER BY'
+      '    data_emissao DESC,'
+      '    id DESC')
     Left = 344
+    ParamData = <
+      item
+        Name = 'DATA_INI'
+        ParamType = ptInput
+      end
+      item
+        Name = 'DATA_FIM'
+        ParamType = ptInput
+      end
+      item
+        Name = 'CNPJ'
+        DataType = ftString
+        ParamType = ptInput
+      end>
+    object FDQuery1XML: TWideStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'XML'
+      Origin = 'XML'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 5
+    end
+    object FDQuery1numero: TStringField
+      DisplayLabel = 'N'#250'mero'
+      FieldName = 'numero'
+      Origin = 'numero'
+      Size = 10
+    end
+    object FDQuery1serie: TStringField
+      DisplayLabel = 'S'#233'rie'
+      FieldName = 'serie'
+      Origin = 'serie'
+      Size = 6
+    end
+    object FDQuery1data_emissao: TDateTimeField
+      DisplayLabel = 'Emiss'#227'o'
+      FieldName = 'data_emissao'
+      Origin = 'data_emissao'
+      DisplayFormat = 'dd/mm/yyyy hh:nn'
+    end
+    object FDQuery1valor_total: TFloatField
+      DisplayLabel = 'Valor'
+      DisplayWidth = 15
+      FieldName = 'valor_total'
+      Origin = 'valor_total'
+      currency = True
+    end
+    object FDQuery1status: TStringField
+      Alignment = taCenter
+      FieldName = 'status'
+      Origin = 'status'
+    end
+    object FDQuery1emitente_cnpj: TStringField
+      Alignment = taCenter
+      DisplayLabel = 'CNPJ Emit.'
+      DisplayWidth = 18
+      FieldName = 'emitente_cnpj'
+      Origin = 'emitente_cnpj'
+      Size = 14
+    end
+    object FDQuery1emitente_nome: TStringField
+      DisplayLabel = 'Emitente'
+      FieldName = 'emitente_nome'
+      Origin = 'emitente_nome'
+      Size = 80
+    end
+    object FDQuery1cfop: TStringField
+      DisplayLabel = 'CFOP'
+      FieldName = 'cfop'
+      Origin = 'cfop'
+      Size = 6
+    end
+    object FDQuery1natureza: TStringField
+      DisplayLabel = 'Natureza da Opera'#231#227'o'
+      FieldName = 'natureza'
+      Origin = 'natureza'
+      Size = 80
+    end
+    object FDQuery1uf: TStringField
+      Alignment = taCenter
+      DisplayLabel = 'UF'
+      DisplayWidth = 4
+      FieldName = 'uf'
+      Origin = 'uf'
+      Size = 2
+    end
+    object FDQuery1dest_nome: TStringField
+      DisplayLabel = 'Destinatario'
+      FieldName = 'dest_nome'
+      Origin = 'dest_nome'
+      Size = 80
+    end
+    object FDQuery1dest_cnpj: TStringField
+      Alignment = taCenter
+      DisplayLabel = 'CNPJ Dest.'
+      DisplayWidth = 18
+      FieldName = 'dest_cnpj'
+      Origin = 'dest_cnpj'
+      Size = 14
+    end
+    object FDQuery1manifestacao: TStringField
+      DisplayLabel = 'Manifestacao'
+      FieldName = 'manifestacao'
+      Origin = 'manifestacao'
+      Size = 14
+    end
+    object FDQuery1chave: TStringField
+      DisplayLabel = 'Chave'
+      FieldName = 'chave'
+      Origin = 'chave'
+      Required = True
+      Size = 44
+    end
+    object FDQuery1tipo_doc: TWideStringField
+      Alignment = taCenter
+      AutoGenerateValue = arDefault
+      DisplayLabel = 'Tipo NFe'
+      DisplayWidth = 10
+      FieldName = 'tipo_doc'
+      Origin = 'tipo_doc'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 15
+    end
+    object FDQuery1tipo: TStringField
+      DisplayLabel = 'Tipo XML'
+      DisplayWidth = 10
+      FieldName = 'tipo'
+      Origin = 'tipo_xml'
+      Required = True
+    end
+    object FDQuery1xml_rel_path: TStringField
+      DisplayLabel = 'Arquivo XML'
+      DisplayWidth = 120
+      FieldName = 'xml_rel_path'
+      Origin = 'xml_rel_path'
+      Required = True
+      Size = 200
+    end
   end
   object Pop_TreeView: TPopupMenu
     Left = 48

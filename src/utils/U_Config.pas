@@ -5,46 +5,13 @@ interface
 uses
   System.SysUtils;
 
-function GetINIPath: string;
 function GetSQLPath: string;
-function GetDatabasePathFromINI: string;
-procedure SaveDatabasePathToINI(const Path: string);
 function SolicitarCaminhoDB: string;
 
 implementation
 
 uses
-  System.IniFiles,
   Vcl.Dialogs;
-
-function GetINIPath: string;
-begin
-  Result := ExtractFilePath(ParamStr(0)) + 'config.ini';
-end;
-
-function GetDatabasePathFromINI: string;
-var
-  Ini: TIniFile;
-begin
-  Ini := TIniFile.Create(GetINIPath);
-  try
-    Result := Ini.ReadString('Database', 'Path', '');
-  finally
-    Ini.Free;
-  end;
-end;
-
-procedure SaveDatabasePathToINI(const Path: string);
-var
-  Ini: TIniFile;
-begin
-  Ini := TIniFile.Create(GetINIPath);
-  try
-    Ini.WriteString('Database', 'Path', Path);
-  finally
-    Ini.Free;
-  end;
-end;
 
 function SolicitarCaminhoDB: string;
 var
@@ -54,11 +21,15 @@ begin
 
   OpenDialog := TOpenDialog.Create(nil);
   try
-    OpenDialog.Filter := 'SQLite DB (*.db)|*.db';
-    OpenDialog.Title := 'Selecione o banco de dados';
+    OpenDialog.Filter :=
+      'SQLite DB (*.db)|*.db';
+
+    OpenDialog.Title :=
+      'Selecione o banco de dados';
 
     if OpenDialog.Execute then
       Result := OpenDialog.FileName;
+
   finally
     OpenDialog.Free;
   end;
@@ -68,9 +39,10 @@ function GetSQLPath: string;
 begin
   Result :=
     IncludeTrailingPathDelimiter(
-      ExtractFileDir(ExtractFileDir(ParamStr(0)))
+      ExtractFileDir(
+        ExtractFileDir(ParamStr(0))
+      )
     ) + 'sql\init.sql';
 end;
 
 end.
-

@@ -9,11 +9,11 @@ PRAGMA foreign_keys = ON;
 -- =========================================
 
 CREATE TABLE IF NOT EXISTS distribuicao_dfe (
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	entidade_id INTEGER NOT NULL,
-	ultima_busca DATETIME,
-	ultimo_nsu   VARCHAR(15), 
-	FOREIGN KEY (entidade_id) REFERENCES entidade(id)
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  entidade_id INTEGER NOT NULL,
+  ultima_busca DATETIME,
+  ultimo_nsu TEXT,
+  FOREIGN KEY (entidade_id) REFERENCES entidade(id)
 );
 
 CREATE TABLE IF NOT EXISTS uf (
@@ -26,9 +26,9 @@ CREATE TABLE IF NOT EXISTS uf (
 CREATE TABLE IF NOT EXISTS entidade (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     tipo INTEGER NOT NULL, -- 1 = CNPJ | 2 = CPF
-	documento      VARCHAR(14),
-	razao_social   VARCHAR(200),
-	email          VARCHAR(200),
+    documento TEXT NOT NULL UNIQUE,
+    razao_social TEXT NOT NULL,
+    email TEXT,
     uf_id INTEGER,
 	ambiente INTEGER,  -- 1=produção, 2=homologação
     ativo INTEGER DEFAULT 1,
@@ -38,11 +38,11 @@ CREATE TABLE IF NOT EXISTS entidade (
 CREATE TABLE IF NOT EXISTS certificado (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     entidade_id INTEGER NULL,
-	caminho_pfx    VARCHAR(500),
-	senha          VARCHAR(200),
+    caminho_pfx TEXT NOT NULL,
+    senha TEXT,
     data_ativacao DATE,
     data_validade DATE,
-	numero_serie   VARCHAR(200),
+    numero_serie TEXT NOT NULL,
     ativo INTEGER DEFAULT 1,
     FOREIGN KEY (entidade_id) REFERENCES entidade(id)
 );
@@ -57,44 +57,41 @@ CREATE TABLE IF NOT EXISTS configuracao (
 -- =========================================
 
 CREATE TABLE IF NOT EXISTS nfe (
-    id                       INTEGER PRIMARY KEY AUTOINCREMENT,
+    ID                INTEGER PRIMARY KEY AUTOINCREMENT,
 
-    cnpj                     VARCHAR(14) NOT NULL,
-    chave                    VARCHAR(44) NOT NULL,
-    nsu                      VARCHAR(15) UNIQUE,
+    CNPJ              TEXT NOT NULL,
+    CHAVE             TEXT NOT NULL,
+    NSU               TEXT UNIQUE,
 
-    numero                   VARCHAR(20),
-    serie                    VARCHAR(10),
-    modelo                   VARCHAR(5),
+    NUMERO            TEXT,
+    SERIE             TEXT,
+    MODELO            TEXT,
 
-    tipo_xml                 VARCHAR(20) NOT NULL,
+    TIPO_XML          TEXT NOT NULL,
 
-    data_emissao             DATETIME,
-    data_autorizacao         DATETIME,
-    data_entrada             DATETIME,
+    DATA_EMISSAO      DATETIME,
+    DATA_AUTORIZACAO  DATETIME,
+    DATA_ENTRADA      DATETIME,
 
-    valor_total              REAL,
+    VALOR_TOTAL       REAL,
 
-    emitente_cnpj            VARCHAR(14),
-    emitente_nome            VARCHAR(200),
+    EMITENTE_CNPJ     TEXT,
+    EMITENTE_NOME     TEXT,
 
-    dest_cnpj                VARCHAR(14),
-    dest_nome                VARCHAR(200),
+    DEST_CNPJ         TEXT,
+    DEST_NOME         TEXT,
 
-    uf                       VARCHAR(2),
-    cfop                     VARCHAR(10),
-    natureza                 VARCHAR(200),
+    UF                TEXT,
+    CFOP              TEXT,
+    NATUREZA          TEXT,
 
-    status                   VARCHAR(50),
+    STATUS            TEXT,
 
-    manifestacao             VARCHAR(50),
+    XML_REL_PATH      TEXT NOT NULL,
 
-    possui_xml_completo      INTEGER DEFAULT 0,
-    possui_evento            INTEGER DEFAULT 0,
-
-    xml_rel_path             VARCHAR(500) NOT NULL,
-
-    data_download            DATETIME DEFAULT CURRENT_TIMESTAMP
+    DATA_DOWNLOAD     DATETIME DEFAULT CURRENT_TIMESTAMP,
+	
+	MANIFESTACAO	  TEXT
 );
 
 -- =========================================
@@ -102,67 +99,23 @@ CREATE TABLE IF NOT EXISTS nfe (
 -- =========================================
 
 CREATE TABLE IF NOT EXISTS nfe_totais (
-    id                INTEGER PRIMARY KEY AUTOINCREMENT,
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    nfe_id          INTEGER NOT NULL,
 
-    nfe_id            INTEGER NOT NULL,
+    base_icms       REAL,
+    valor_icms      REAL,
+    valor_icms_st   REAL,
 
-    base_icms         REAL,
-    valor_icms        REAL,
-    valor_icms_st     REAL,
+    valor_pis       REAL,
+    valor_cofins    REAL,
 
-    valor_pis         REAL,
-    valor_cofins      REAL,
+    valor_ipi       REAL,
+    valor_frete     REAL,
+    valor_seguro    REAL,
+    valor_desconto  REAL,
+    valor_outros    REAL,
 
-    valor_ipi         REAL,
-    valor_frete       REAL,
-    valor_seguro      REAL,
-    valor_desconto    REAL,
-    valor_outros      REAL,
-
-    FOREIGN KEY (nfe_id)
-      REFERENCES nfe(id)
-      ON DELETE CASCADE
-);
-
--- =========================================
--- NFE_IMPOSTOS
--- =========================================
-
-CREATE TABLE IF NOT EXISTS nfe_impostos (
-    id                        INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    nfe_id                    INTEGER NOT NULL,
-
-    tipo_imposto              VARCHAR(30) NOT NULL,
-
-    origem_imposto            VARCHAR(20),
-
-    cst                       VARCHAR(10),
-    cbenef                    VARCHAR(20),
-
-    base_calculo              REAL,
-    base_calculo_reduzida     REAL,
-
-    percentual_aliquota       REAL,
-    percentual_reducao        REAL,
-
-    valor_imposto             REAL,
-    valor_isento              REAL,
-
-    -- REFORMA TRIBUTÁRIA
-    base_ibs                  REAL,
-    aliquota_ibs              REAL,
-    valor_ibs                 REAL,
-
-    base_cbs                  REAL,
-    aliquota_cbs              REAL,
-    valor_cbs                 REAL,
-
-    observacao                VARCHAR(200),
-
-    FOREIGN KEY (nfe_id)
-      REFERENCES nfe(id)
-      ON DELETE CASCADE
+    FOREIGN KEY (nfe_id) REFERENCES nfe(id) ON DELETE CASCADE
 );
 
 -- =========================================
@@ -170,27 +123,24 @@ CREATE TABLE IF NOT EXISTS nfe_impostos (
 -- =========================================
 
 CREATE TABLE IF NOT EXISTS nfe_eventos (
-    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    nfe_id        INTEGER NOT NULL,
 
-    nfe_id           INTEGER NOT NULL,
+    tipo_evento   TEXT,
+    descricao     TEXT,
 
-    tipo_evento      VARCHAR(20),
-    descricao        VARCHAR(200),
+    data_evento   DATETIME,
 
-    data_evento      DATETIME,
+    xml_rel_path  TEXT,
 
-    xml_rel_path     VARCHAR(500),
-
-    FOREIGN KEY (nfe_id)
-      REFERENCES nfe(id)
-      ON DELETE CASCADE
+    FOREIGN KEY (nfe_id) REFERENCES nfe(id) ON DELETE CASCADE
 );
 
 -- =========================================
 -- CONTROLE DE VERSÃO DO BANCO
 -- =========================================
 
-CREATE TABLE IF NOT EXISTS db_version (
+CREATE TABLE IF NOT EXISTS deb_version (
     versao INTEGER
 );
 
@@ -207,17 +157,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_dist_entidade ON distribuicao_dfe(entidade
 -- NFE
 CREATE INDEX IF NOT EXISTS idx_nfe_chave ON nfe (chave);
 CREATE INDEX IF NOT EXISTS idx_nfe_cnpj  ON nfe (cnpj);
-CREATE INDEX IF NOT EXISTS idx_nfe_nsu ON nfe(nsu);
-
-
 CREATE INDEX IF NOT EXISTS idx_nfe_data  ON nfe (data_emissao);
 CREATE INDEX IF NOT EXISTS idx_nfe_numero_serie ON nfe (numero, serie);
-CREATE INDEX IF NOT EXISTS idx_nfe_emitente ON nfe(emitente_cnpj);
-CREATE INDEX IF NOT EXISTS idx_nfe_dest ON nfe(dest_nome);
-CREATE INDEX IF NOT EXISTS idx_nfe_tipo ON nfe(tipo_xml);
-
-CREATE INDEX IF NOT EXISTS idx_impostos_nfe ON nfe_impostos(nfe_id);
-CREATE INDEX IF NOT EXISTS idx_impostos_tipo ON nfe_impostos(tipo_imposto);
 
 -- =========================================
 -- CARGA INICIAL - UFs

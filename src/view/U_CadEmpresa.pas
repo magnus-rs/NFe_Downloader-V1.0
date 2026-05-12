@@ -9,7 +9,7 @@ uses
   U_CertificadoService, U_Entidade, U_Certificado, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
-  FireDAC.Comp.DataSet;
+  FireDAC.Comp.DataSet, System.ImageList, Vcl.ImgList;
 
 type
   TForm_CadastroEmpresa = class(TForm)
@@ -32,12 +32,14 @@ type
     FDQuery1: TFDQuery;
     Btn_Cancelar: TButton;
     Panel1: TPanel;
+    Group_Ambiente: TRadioGroup;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure Btn_SalvarClick(Sender: TObject);
     procedure Label_CertificadoClick(Sender: TObject);
     procedure Btn_CancelarClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Combo_DocChange(Sender: TObject);
   private
     FEntidade: TEntidade;
     FCertCaminho: string;
@@ -60,7 +62,7 @@ implementation
 {$R *.dfm}
 
 uses
-  U_DM;
+  U_DM, U_CertificadoRepository;
 
 { ================= AUXILIARES ================= }
 
@@ -105,6 +107,14 @@ begin
   finally
     Query.Free;
   end;
+end;
+
+procedure TForm_CadastroEmpresa.Combo_DocChange(Sender: TObject);
+begin
+     if Combo_Doc.ItemIndex = 0 then
+        Edit_documento.EditMask := '00\.000\.000\/0000\-00;1;_'
+     else
+        Edit_documento.EditMask := '000\.000\.000\-00;1;_';
 end;
 
 { ================= CERTIFICADO ================= }
@@ -193,19 +203,21 @@ begin
   end;
 end;
 
-{ ================= SALVAR ================= }
-
 procedure TForm_CadastroEmpresa.Btn_CancelarClick(Sender: TObject);
 begin
     ModalResult := mrCancel;
 end;
 
+{ ================= SALVAR ================= }
+
 procedure TForm_CadastroEmpresa.Btn_SalvarClick(Sender: TObject);
 var
   Doc: string;
-  Cert: TCertificado;
+  Cert: TCertificadoRepository; //TCertificado;
   InfoCert: TInfoCertificado;
+  AUltBusca: TDateTime;
 begin
+
   if Combo_Doc.ItemIndex < 0 then
     raise Exception.Create('Selecione o tipo (CPF ou CNPJ)');
 
@@ -242,6 +254,11 @@ begin
   FEntidade.Email := Edit_Email.Text;
   FEntidade.UFID := GetUFSelecionada;
   FEntidade.Ativo := Check_Ativo.Checked;
+  case Group_Ambiente.ItemIndex of
+     0: FEntidade.Ambiente := 1;
+     1: FEntidade.Ambiente := 2;
+  end;
+
 
   DM.FDConnection1.StartTransaction;
   try
@@ -249,45 +266,26 @@ begin
     FEntidade.Salvar;
 
     // insere Ult_NSU
+    AUltBusca := Now()-1;
+
     DM.FDConnection1.ExecSQL(
-      'INSERT OR IGNORE INTO distribuicao_dfe (entidade_id, ultimo_nsu) ' +
-      'VALUES (?, ?)',
-      [FEntidade.ID, '0']
+      'INSERT OR IGNORE INTO distribuicao_dfe (entidade_id, ultima_busca, ultimo_nsu) ' +
+      'VALUES (?, ?, ?)',
+      [FEntidade.ID, AUltBusca, '000000000000000']
     );
 
     // certificado
+    Cert := TCertificadoRepository.Create(DM.FDConnection1);
     if FCertCaminho <> '' then
     begin
-      InfoCert := TCertificadoService.LerCertificado(FCertCaminho, FCertSenha);
-
-      // valida vínculo
-      if SomenteNumeros(InfoCert.Documento) <> FEntidade.Documento then
-        raise Exception.CreateFmt(
-          'Certificado pertence a %s (%s), diferente do documento informado.',
-          [InfoCert.Nome, InfoCert.Documento]
-        );
-
-      // valida vencimento
-      if InfoCert.Validade < Date then
-        raise Exception.Create('Certificado está vencido.');
-
-      Cert := TCertificado.Create;
       try
-        Cert.EntidadeID := FEntidade.ID;
-        Cert.Caminho := FCertCaminho;
-        Cert.Senha := FCertSenha;
-        Cert.DataAtivacao := InfoCert.Ativacao;
-        Cert.DataValidade := InfoCert.Validade;
-        Cert.NumeroSerie := InfoCert.NumeroSerie;
-        Cert.Ativo := True;
-
-        Cert.Salvar;
+        Cert.ImportarPFX(FCertCaminho, FCertSenha);
       finally
         Cert.Free;
       end;
     end;
 
-    DM.FDConnection1.Commit;
+    //DM.FDConnection1.Commit;
 
     ShowMessage('Cadastro salvo com sucesso!');
     ModalResult := mrOk;
@@ -320,6 +318,8 @@ begin
   Combo_Doc.Items.Clear;
   Combo_Doc.Items.Add('CNPJ');
   Combo_Doc.Items.Add('CPF');
+
+  Edit_Documento.EditMask := '00\.000\.000\/0000\-00;1;_';
 
   Label_Certificado.Font.Color := clBlue;
   Label_Certificado.Cursor := crHandPoint;

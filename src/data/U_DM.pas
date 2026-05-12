@@ -37,7 +37,7 @@ implementation
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
-uses U_Config;
+uses U_Config, U_configService;
 
 {$R *.dfm}
 
@@ -54,44 +54,52 @@ var
   DBPath: string;
 begin
   FDConnection1.DriverName := 'SQLite';
+  // carrega config.ini
+  TConfigService.Carregar;
 
-  DBPath := GetDatabasePathFromINI;
+  DBPath := TConfigService.CaminhoDB + 'nfe.db';
 
-  // 1. Se não tem caminho → pedir
-  if DBPath = '' then
+  // sem caminho configurado
+  if Trim(DBPath) = '' then
   begin
     DBPath := SolicitarCaminhoDB;
 
     if DBPath = '' then
       raise Exception.Create('Banco de dados não informado.');
 
-    SaveDatabasePathToINI(DBPath);
+    TConfigService.Config.PathDB := DBPath;
+    TConfigService.Salvar;
   end;
 
-  // 2. Se caminho existe mas arquivo não → perguntar se cria
+  // banco não existe
   if not FileExists(DBPath) then
   begin
-    if MessageDlg('Banco de dados não encontrado. Deseja criar um novo?',
-      mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    if MessageDlg(
+      'Banco de dados não encontrado. Deseja criar um novo?',
+      mtConfirmation,
+      [mbYes, mbNo],
+      0
+    ) = mrYes then
     begin
       CriarBanco(DBPath);
     end
     else
     begin
-      // usuário pode escolher outro
       DBPath := SolicitarCaminhoDB;
 
       if (DBPath = '') or (not FileExists(DBPath)) then
         raise Exception.Create('Banco de dados inválido.');
 
-      SaveDatabasePathToINI(DBPath);
+      TConfigService.Config.PathDB := DBPath;
+      TConfigService.Salvar;
     end;
   end;
 
-  // 3. Conectar
+  // conecta
   FDConnection1.Params.Database := DBPath;
   FDConnection1.Connected := True;
-end;
+  FDConnection1.ExecSQL('PRAGMA foreign_keys = ON');
+ end;
 
 procedure TDM.CriarBanco(const Path: string);
 begin

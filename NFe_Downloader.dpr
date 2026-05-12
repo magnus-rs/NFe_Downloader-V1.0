@@ -11,7 +11,10 @@ uses
   U_Entidade in 'src\utils\U_Entidade.pas',
   U_Certificado in 'src\utils\U_Certificado.pas',
   U_CadCertificado in 'src\view\U_CadCertificado.pas' {Form_CadCertificado},
-  U_CertificadoRepository in 'src\repository\U_CertificadoRepository.pas';
+  U_CertificadoRepository in 'src\repository\U_CertificadoRepository.pas',
+  U_Configurações in 'src\view\U_Configurações.pas' {Form_Configuracoes},
+  U_configService in 'src\service\U_configService.pas',
+  U_XMLUtils in 'src\utils\U_XMLUtils.pas';
 
 {$R *.res}
 begin
@@ -31,6 +34,7 @@ begin
   Application.CreateForm(TForm_Principal, Form_Principal);
   Application.CreateForm(TForm_CadastroEmpresa, Form_CadastroEmpresa);
   Application.CreateForm(TForm_CadCertificado, Form_CadCertificado);
+  Application.CreateForm(TForm_Configuracoes, Form_Configuracoes);
   Application.Run;
 
 end.
